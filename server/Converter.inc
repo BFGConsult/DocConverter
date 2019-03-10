@@ -227,7 +227,7 @@ class TextUnoConverter extends UnoConverter {
 	      array (
 		     'mime' => 'application/pdf',
 		     'extension' => 'pdf',
-		     'pretty' => 'Portable Document Format File',
+		     'pretty' => 'Portable Document Format',
 		     ),
 	      )
 		   );
