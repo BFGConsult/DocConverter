@@ -284,7 +284,7 @@ class TextUnoConverter extends UnoConverter {
 	      'stw' => null,
 	      'sxw' => null,
 	      'text' => null,
-	      'rtf' =>
+	      'txt' =>
 	      array (
 		     'mime' => 'text/plain',
 		     'extension' => 'txt',
