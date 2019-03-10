@@ -61,6 +61,9 @@ abstract class Converter extends Result {
   }
   
   static function getConverter($in_name, $in_type, $out_type) {
+    if (!is_string($out_type)) {
+      throw new Exception("$out_type is not a string");
+    }
     foreach (self::$converters as $converter) {
       $result=$converter::createConverter($in_name, $in_type, $out_type);
       if ($result)
@@ -126,26 +129,40 @@ abstract class UnoConverter extends Converter {
   function getResultType() {
     return $this->out_mimetype;
   }
+
+  static function flipArray($in_arr, $key) {
+    $res = array();
+    foreach ($in_arr as $akey => $avalue) {
+      $res[$avalue[$key]]=$akey;
+    }
+    return $res;
+  }
   
   function getBody() {
-    $out_type = array_flip($this->getTargets(null))[$this->out_mimetype];
+    $out_type = self::flipArray($this->getTargets(null),'mime')[$this->out_mimetype];
     
     $src_name=$this->in_name.".jau";
     $tgt_name=$this->in_name . ".${out_type}";
     rename($this->in_name, $src_name);
 
     $cmd="HOME=/var/www/home/ /usr/bin/unoconv -f ${out_type} -o $tgt_name $src_name 2>&1";
-    print $cmd;
-    print "\n";
     $handle = popen($cmd, "r");
     $errors = fread($handle, 2096);
-    print $errors;
     pclose($handle);
 
+    //Enable on production systems
     //unlink($src_name);
 
-    $result=file_get_contents($tgt_name);
-    unlink($tgt_name);
+    if ( file_exists($tgt_name) ) {
+      $result=file_get_contents($tgt_name);
+      unlink($tgt_name);
+    }
+    else {
+      $this->out_mimetype='text/plain';
+      $result=$cmd;
+      $result.="\n";
+      $result.=$errors;
+    }
     return $result;
   }  
 }
@@ -153,7 +170,8 @@ abstract class UnoConverter extends Converter {
 class TextUnoConverter extends UnoConverter {
 
   static function createConverter($in_name, $in_mimetype, $out_mimetype) {
-    if (!in_array($out_mimetype, self::getTargets(null)))
+    //Very ugly hack
+    if (!in_array($out_mimetype, array_flip(self::flipArray(self::getTargets(null),'mime'))))
       return null;
 
     //No input checking, we are saying we can convert anything to the give outputtypes

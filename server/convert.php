@@ -5,6 +5,11 @@ ini_set("display_errors", 1);
 include_once('Converter.inc');
 include_once('IntroSpection.inc');
 
+function debugOutput($str) {
+  header('Content-Type: text/plain');
+  print_r($str);
+}
+
 function errorPage($code) {
   http_response_code($code);
   print $code;
@@ -46,9 +51,9 @@ function parseArguments($base='/') {
     }
   }
   header('X-InType: '. $in_type);
-  header('X-OutType: '. $out_type);
+  header('X-OutType: '. $out_type['mime']);
 
-  return Converter::getConverter($in_name, $in_type, $out_type);
+  return Converter::getConverter($in_name, $in_type, $out_type['mime']);
 }
 
 $converter=parseArguments('/convert/');
@@ -57,6 +62,8 @@ if (!$converter) {
     errorPage(415);
 }
 
+$body=$converter->getBody();
+//Must be called after getBody, as getBody may modify headers on error
 $converter->setHeaders();
-print $converter->getBody();
+print $body;
 ?>
