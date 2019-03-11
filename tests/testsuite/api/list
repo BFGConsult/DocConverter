@@ -1,0 +1,10 @@
+#!/bin/bash
+
+. ../../helpers/testSuite
+
+res=$(runcmd list)
+
+test "sources exist" "${res}" '.[]|select (. == "sources")'
+test "targets exist" "${res}" '.[]|select (. == "targets")'
+test "modules exist" "${res}" '.[]|select (. == "modules")'
+

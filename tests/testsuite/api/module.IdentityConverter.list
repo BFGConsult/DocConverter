@@ -1,0 +1,8 @@
+#!/bin/bash
+
+. ../../helpers/testSuite
+
+res=$(runcmd module/IdentityConverter/list)
+
+test "sources exist" "${res}" '.[]|select (. == "sources")'
+test "targets exist" "${res}" '.[]|select (. == "targets")'

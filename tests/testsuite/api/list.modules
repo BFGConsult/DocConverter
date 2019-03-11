@@ -1,0 +1,7 @@
+#!/bin/bash
+
+. ../../helpers/testSuite
+
+res=$(runcmd list/modules)
+
+test "IdentityConverter exist" "${res}" '.[]|select (. == "IdentityConverter")'

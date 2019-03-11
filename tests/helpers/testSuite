@@ -1,0 +1,18 @@
+#!/bin/bash
+
+source ~/.docconvertrc
+
+runcmd () {
+  curl -s $BASEURL/$1
+}
+
+test () {
+  echo -n "$1: "
+  if echo $2 | jq -e "$3" >/dev/null
+  then
+    echo pass
+  else
+    echo fail
+  fi
+}
+

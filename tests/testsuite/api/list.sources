@@ -1,0 +1,10 @@
+#!/bin/bash
+
+. ../../helpers/testSuite
+
+res=$(runcmd list/sources)
+
+test "TXT exists" "${res}" '.["txt"]'
+test "TXT mime" "${res}" '.["txt"]["mime"]|select (. == "text/plain")'
+test "TXT extension" "${res}" '.["txt"]["extension"]|select (. == "txt")'
+test "TXT pretty" "${res}" '.["txt"]["pretty"]|select (. == "Plain Text File")'
