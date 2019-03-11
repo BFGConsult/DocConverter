@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo -n "Testing conversion odt to odt: "
+TMPNAME=$(mktemp -u).odt
+../../../../client/docConvert.sh  -m IdentityConverter ../../../ExampleFiles/openoffice.odt $TMPNAME >/dev/null
+[ -f $TMPNAME ] && ( rm $TMPNAME; echo pass) || echo fail
