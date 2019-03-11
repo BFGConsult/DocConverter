@@ -42,9 +42,11 @@ setTargets();
 
 class ListResults extends Result {
   protected $resultcode;
+  protected $module;
 
-  function __construct() {
+  function __construct($module=null) {
     $this->resultcode = 200;
+    $this->module = $module;
   }
   
   function getResultType() {
@@ -56,62 +58,75 @@ class ListResults extends Result {
   }
   
   function getBody() {
-    $res = array('sources', 'targets', 'modules');
+    $res =  ($this->module) ?
+      array('sources', 'targets') :
+      array('sources', 'targets', 'modules');
     return json_encode($res);
   }
 
-  static function createList($myArgs, $prevArgs, $base) {
+  static function createList($myArgs, $prevArgs, $base, $module=null) {
     $c = count($myArgs);
     if ($c > 0) {
       $format = ($c > 1) ? $myArgs[1] : null;
       switch ($myArgs[0]) {
       case 'modules':
-	return new ListModules();
+	return new ListModules($module);
       case 'targets':
-	return new ListTargets($format);
+	return new ListTargets($format, $module);
       case 'sources':
-	return new ListSources($format);
+	return new ListSources($format, $module);
       }
 
-      $list = new ListResults();
+      $list = new ListResults($module);
       $list->resultcode = 404;
       return $list;
     }
     else {
-      return new ListResults();
+      return new ListResults($module);
     }
   }
 }
 
 class ListTargets extends ListResults {
-  function __construct($sourceFormat) {
+  function __construct($sourceFormat, $module = null) {
     $this->sourceFormat = $sourceFormat;
+    $this->module = $module;
   }
 
   function getBody() {
-    $targetList = Converter::getAllTargets($this->sourceFormat);
+    $targets = ($this->module) ?
+      $this->module::getTargets($this->sourceFormat):
+      Converter::getAllTargets($this->sourceFormat);
+
 
     //Put selfconversion at the end
-    $sourceTarget = $targetList[$this->sourceFormat];
-    unset($targetList[$this->sourceFormat]);
-    $targetList[$this->sourceFormat]=$sourceTarget;
+    if (array_key_exists($this->sourceFormat, $targets)) {
+      $sourceTarget = $targets[$this->sourceFormat];
+      unset($targets[$this->sourceFormat]);
+      $targets[$this->sourceFormat]=$sourceTarget;
+    }
 
-    return json_encode($targetList);
+    return json_encode($targets);
   }
 }
 
 class ListSources extends ListResults {
-  function __construct($targetFormat) {
+  function __construct($targetFormat, $module = null) {
     $this->targetFormat = $targetFormat;
+    $this->module = $module;
   }
 
   function getBody() {
-    return json_encode(Converter::getAllSources($this->targetFormat));
+    $sources = ($this->module) ?
+      $this->module::getSources($this->targetFormat):
+      Converter::getAllSources($this->targetFormat);
+    return json_encode($sources);
   }
 }
 class ListModules extends ListResults {
   function getBody() {
-    return json_encode(Converter::getAllModules());
+    $modules = ($this->module) ? array($this->module) : Converter::getAllModules();
+    return json_encode($modules);
   }
 }
 ?>

@@ -32,6 +32,39 @@ function parseArguments($base='/') {
   if ($argv[0] == 'list') {
     return ListResults::createList(array_slice($argv, 1), array_slice($argv, 0, 1),$base);
   }
+  elseif ($argv[0] == 'module') {
+    if (! in_array($argv[1], Converter::getAllModules())) {
+      echo 'No such module';
+    }
+    else {
+      if (count($argv) > 2 && $argv[2] == 'list') {
+	return ListResults::createList(array_slice($argv, 3), array_slice($argv, 0, 3), $base, $argv[1]);
+	}
+      else {
+	if (count($argv)>3) {
+	  errorPage(500);
+	}
+	if ($_SERVER['REQUEST_METHOD'] != 'POST' ) {
+	  errorPage(405);
+	}
+	$in_name= $_FILES['file']['tmp_name'];
+	$in_type = $_FILES['file']['type'];
+	$targets= $argv[1]::getTargets();
+
+	if (array_key_exists($argv[0], $targets)) {
+	  $out_type=$targets[$argv[0]];
+	}
+	else {
+	  errorPage(404);
+	}
+      }
+      header('X-InType: '. $in_type);
+      header('X-OutType: '. $out_type['mime']);
+
+      return $argv[1]::createConverter($in_name, $in_type, $out_type['mime']);
+    }
+    exit(1);
+  }
   else {
     if (count($argv)>1) {
       errorPage(500);
