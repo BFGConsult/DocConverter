@@ -1,0 +1,6 @@
+#!/bin/bash
+
+. ../../helpers/require
+
+requireProgram jq
+requireProgram curl
