@@ -2,5 +2,5 @@
 
 echo -n "Testing conversion odt to pdf: "
 TMPNAME=$(mktemp -u).pdf
-../../../../client/docConvert.sh  ../../../ExampleFiles/openoffice.odt $TMPNAME >/dev/null
+../../../../client/docConvert  ../../../ExampleFiles/openoffice.odt $TMPNAME >/dev/null
 [ -f $TMPNAME ] && ( rm $TMPNAME; echo pass) || echo fail

@@ -9,8 +9,31 @@ die () {
     exit 1
 }
 
+
+while getopts 'm:' val
+do
+  case $val in
+    m) module=${OPTARG} ;;
+    ?) exit 1;
+  esac
+done
+
+echo hei
+
+
+let nopts=OPTIND-1
+shift ${nopts}
+
+
 #Sourcing BASEURL
 source ~/.docconvertrc
+
+if [ -n "$module" ]
+then
+    echo $BASEURL
+    BASEURL=$BASEURL/module/$module
+    echo $BASEURL
+fi
 
 infile=$1
 outfile=$2
