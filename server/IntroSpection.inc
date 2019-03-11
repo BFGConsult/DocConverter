@@ -23,7 +23,7 @@ class DefaultPage extends Result {
 <h1>Document Converter</h1>
 
 <form id="form" method="post" action="" enctype="multipart/form-data">
-<p>Source file: <input id="fileinput" name="file" type="file" onchange="setTargets()"/> </p>
+<p>Source file: <input id="fileinput" name="file" type="file" onchange="setTargets()"/><input id="suffix" name="suffix" value="" type="hidden"/> </p>
 <p>
 Target file format:
 <select id="targets" disabled="true" onchange="setAction()">
@@ -89,7 +89,14 @@ class ListTargets extends ListResults {
   }
 
   function getBody() {
-    return json_encode(Converter::getAllTargets($this->sourceFormat));
+    $targetList = Converter::getAllTargets($this->sourceFormat);
+
+    //Put selfconversion at the end
+    $sourceTarget = $targetList[$this->sourceFormat];
+    unset($targetList[$this->sourceFormat]);
+    $targetList[$this->sourceFormat]=$sourceTarget;
+
+    return json_encode($targetList);
   }
 }
 
