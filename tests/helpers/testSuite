@@ -6,7 +6,7 @@ runcmd () {
   curl -s $BASEURL/$1
 }
 
-test () {
+testjq () {
   echo -n "$1: "
   if echo $2 | jq -e "$3" >/dev/null
   then

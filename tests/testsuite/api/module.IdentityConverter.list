@@ -4,5 +4,5 @@
 
 res=$(runcmd module/IdentityConverter/list)
 
-test "sources exist" "${res}" '.[]|select (. == "sources")'
-test "targets exist" "${res}" '.[]|select (. == "targets")'
+testjq "sources exist" "${res}" '.[]|select (. == "sources")'
+testjq "targets exist" "${res}" '.[]|select (. == "targets")'

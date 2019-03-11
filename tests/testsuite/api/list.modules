@@ -4,4 +4,4 @@
 
 res=$(runcmd list/modules)
 
-test "IdentityConverter exist" "${res}" '.[]|select (. == "IdentityConverter")'
+testjq "IdentityConverter exist" "${res}" '.[]|select (. == "IdentityConverter")'

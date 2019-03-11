@@ -4,7 +4,7 @@
 
 res=$(runcmd list)
 
-test "sources exist" "${res}" '.[]|select (. == "sources")'
-test "targets exist" "${res}" '.[]|select (. == "targets")'
-test "modules exist" "${res}" '.[]|select (. == "modules")'
+testjq "sources exist" "${res}" '.[]|select (. == "sources")'
+testjq "targets exist" "${res}" '.[]|select (. == "targets")'
+testjq "modules exist" "${res}" '.[]|select (. == "modules")'
 
