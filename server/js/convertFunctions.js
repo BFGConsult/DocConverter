@@ -9,6 +9,7 @@ function removeOptions(selectbox)
 
 function setAction() {
     var targetformat = document.getElementById('targets').value;
+    document.getElementById('suffix').value=targetformat;
     var form = document.getElementById('form');
     form.action = window.location + targetformat;
     console.log(form.action);
@@ -16,8 +17,15 @@ function setAction() {
     submit.disabled = false;
 }
 
+var cursuffix = '';
+
+
 function setTargets() {
     var suffix = document.getElementById('fileinput').value.split('.').pop();
+    var initialsuffix=document.getElementById('suffix').value;
+    if (suffix == cursuffix)
+	return;
+    cursuffix = suffix;
     var targets = document.getElementById('targets');
     var submit = document.getElementById('submit');
     submit.disabled = true;
@@ -28,15 +36,19 @@ function setTargets() {
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 	    if (this.readyState == 4 && this.status == 200) {
-		var suffixes = Object.keys(JSON.parse(xhttp.responseText));
-		if (suffixes.length > 0) {
-		    suffixes.sort();
-		    for (suffix of suffixes) {
+		var suffixes = JSON.parse(xhttp.responseText);
+		var suffixKeys = Object.keys(suffixes);
+		if (suffixKeys.length > 0) {
+		    //suffixKeys.sort();
+		    for (key of suffixKeys) {
 			var option = document.createElement("option");
-			option.text = suffix;
+			var suffix=suffixes[key];
+			option.text = suffix['pretty'];
+			option.value = suffix['extension'];
 			targets.add(option); 
 		    }
 		    targets.disabled = false;
+		    targets.value=initialsuffix;
 		    setAction();
 		}
 	    }
