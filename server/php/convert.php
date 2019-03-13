@@ -2,11 +2,11 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+include_once('config.inc');
+
 include_once('Converter.inc');
 include_once('IntroSpection.inc');
 include_once('UserDB.inc');
-
-$dbconfig="nulldb:";
 
 $users=UserDB::create($dbconfig);
 
