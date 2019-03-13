@@ -212,12 +212,7 @@ class TextUnoConverter extends UnoConverter {
     return
       array_filter(
 		   array(
-			 'docbook' =>
-			 array (
-				'mime' => 'application/docbook+xml',
-				'extension' => 'docbook',
-				'pretty' => 'DocBook',
-				),
+			 'docbook' => MimeDB::getEntryFromExtension('docbook')
 			 )
 		   );
   }
@@ -225,80 +220,45 @@ class TextUnoConverter extends UnoConverter {
     return
       array_filter(
         array(
-	      'pdf' =>
-	      array (
-		     'mime' => 'application/pdf',
-		     'extension' => 'pdf',
-		     'pretty' => 'Portable Document Format',
-		     ),
+	      'pdf' => MimeDB::getEntryFromExtension('pdf')
 	      )
 		   );
   }
   
   static protected function getBothFormats() {
-      return
-        array_filter(
-          array(
-	      'bib' => null,
-	      'doc' => null,
-	      'doc6' => null,
-	      'doc95' => null,
-	      'docx' =>
-	      array (
-		     'mime' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.documentl',
-		     'extension' => 'docx',
-		     'pretty' => 'Microsoft Word (OpenXML)',
-		     ),
-	      'docx7' => null,
-	      'fodt' => null,
-	      'html' =>
-	      array (
-		     'mime' => 'text/html',
-		     'extension' => 'html',
-		     'pretty' => 'HTML',
-		     ),
-	      'latex' => null,
-	      'mediawiki' => null,
-	      'odt' =>
-	      array (
-		     'mime' => 'application/vnd.oasis.opendocument.text',
-		     'extension' => 'odt',
-		     'pretty' => 'OpenDocument text document',
-		     ),
-	      'ooxml' => null,
-	      'ott' =>
-	      array (
-		     'mime' => 'application/vnd.oasis.opendocument.text-template',
-		     'extension' => 'ott',
-		     'pretty' => 'OpenDocument Document Template',
-		     ),
-	      'pdb' => null,
-	      'psw' => null,
-	      'rtf' =>
-	      array (
-		     'mime' => 'text/rtf',
-		     'extension' => '.rtf',
-		     'pretty' => 'Rich Text Format File',
-		     ),
-	      'sdw' => null,
-	      'sdw4' => null,
-	      'sdw3' => null,
-	      'stw' => null,
-	      'sxw' => null,
-	      'text' => null,
-	      'txt' =>
-	      array (
-		     'mime' => 'text/plain',
-		     'extension' => 'txt',
-		     'pretty' => 'Plain Text File',
-		     ),
-	      'uot' => null,
-	      'vor' => null,
-	      'vor4' => null,
-	      'vor3' => null,
-	      'wps' => null,
-	      'xhtml' => null,
-	      )
+    return
+      array_filter(
+		   array(
+			 'bib' => null,
+			 'doc' => null,
+			 'doc6' => null,
+			 'doc95' => null,
+			 'docx' => MimeDB::getEntryFromExtension('docx'),
+			 'docx7' => null,
+			 'fodt' => null,
+			 'html' => MimeDB::getEntryFromExtension('html'),
+			 'latex' => null,
+			 'mediawiki' => null,
+			 'odt' => MimeDB::getEntryFromExtension('odt'),
+			 'ooxml' => null,
+			 'ott' => MimeDB::getEntryFromExtension('ott'),
+			 'pdb' => null,
+			 'psw' => null,
+			 'rtf' => MimeDB::getEntryFromExtension('rtf'),
+			 'sdw' => null,
+			 'sdw4' => null,
+			 'sdw3' => null,
+			 'stw' => null,
+			 'sxw' => null,
+			 'text' => null,
+			 'txt' => MimeDB::getEntryFromExtension('txt'),
+			 'uot' => null,
+			 'vor' => null,
+			 'vor4' => null,
+			 'vor3' => null,
+			 'wps' => null,
+			 'xhtml' => null,
+			 )
 		   );
   }
 }

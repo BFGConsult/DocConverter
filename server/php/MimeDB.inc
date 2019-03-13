@@ -94,5 +94,13 @@ class MimeDB {
     return null;
   }
 
+  static function getEntryFromExtension($extension) {
+    if (!self::$instance)
+      self::$instance = new MimeDB();
+
+    return (array_key_exists($extension, self::$instance->db)) ?
+	    self::$instance->db[$extension] : null;
+  }
+
 }
 ?>
