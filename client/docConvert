@@ -9,17 +9,16 @@ die () {
     exit 1
 }
 
+verbose=false
 
-while getopts 'm:' val
+while getopts 'm:v' val
 do
   case $val in
     m) module=${OPTARG} ;;
+    v) verbose=true ;;
     ?) exit 1;
   esac
 done
-
-echo hei
-
 
 let nopts=OPTIND-1
 shift ${nopts}
@@ -27,6 +26,14 @@ shift ${nopts}
 
 #Sourcing BASEURL
 source ~/.docconvertrc
+
+if [ -n "$APIKEY" ]
+then
+    USER=$(echo $APIKEY|cut -d- -f1)
+    APIKEY=$(echo $APIKEY|cut -d- -f2)
+    APIKEY=$(echo $APIKEY-$(date +%Y-%m-%d) | shasum | cut -d\  -f 1)
+    APIKEY="${USER}-${APIKEY}"
+fi
 
 if [ -n "$module" ]
 then
@@ -50,9 +57,11 @@ outsuffix="${outfile##*.}"
 
 tmpfile=$(mktemp)
 
-cmd="curl -s -D - -F \"file=@${infile};type=${inmime}\" $BASEURL/$outsuffix -o $tmpfile";
-echo "$cmd"
-result=$(curl -s -D - -F "file=@${infile};type=${inmime}" $BASEURL/$outsuffix -o $tmpfile | egrep -o '^HTTP/[[:digit:]]\.[[:digit:]] [[:digit:]]{3}' | cut -d' ' -f2 | tail -n 1)
+if $verbose
+then
+    echo curl -s -D -  -F "file=@${infile};type=${inmime}" -F apikey=${APIKEY} $BASEURL/$outsuffix -o $tmpfile
+fi
+result=$(curl -s -D -  -F "file=@${infile};type=${inmime}" -F apikey=${APIKEY} $BASEURL/$outsuffix -o $tmpfile | egrep -o '^HTTP/[[:digit:]]\.[[:digit:]] [[:digit:]]{3}' | cut -d' ' -f2 | tail -n 1)
 
 errorState=false
 
@@ -77,6 +86,7 @@ esac
 if $errorState
 then
     echo $tmpfile
-    #rm $tmpfile
+    cat $tmpfile
+    rm $tmpfile
     exit 1
 fi
