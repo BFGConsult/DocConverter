@@ -5,16 +5,26 @@ ini_set("display_errors", 1);
 include_once('Converter.inc');
 include_once('IntroSpection.inc');
 
+function checkApiKey($apikey, &$timeout=0) {
+  //NOT IMPLEMENTED, ALWAYS ANSWERS TRUE
+  $timeout = 0;
+  return true;
+}
+
 function debugOutput($str) {
   header('Content-Type: text/plain');
   print_r($str);
 }
 
-function errorPage($code) {
+function errorPage($code, $headerlist=null) {
   http_response_code($code);
+  if ($headerlist) {
+    foreach($headerlist as $header => $value) {
+      header("${header}: ${value}");
+    }
+  }
   print $code;
   exit(1);
-  //include('my_404.php');
 }
 
 function removePrefixIfExists($prefix, $str) {
@@ -72,6 +82,16 @@ function parseArguments($base='/') {
     if ($_SERVER['REQUEST_METHOD'] != 'POST' ) {
       errorPage(405);
     }
+
+    $apikey=(array_key_exists('apikey', $_POST))?$_POST['apikey']:null;
+    $timeout=0;
+    if (!checkApiKey($apikey, $timeout)) {
+      errorPage(403);
+    }
+    elseif ($timeout) {
+      errorPage(429, array('Retry-After' => $timeout));
+    }
+
     $in_name= $_FILES['file']['tmp_name'];
     $in_type = $_FILES['file']['type'];
     $targets=Converter::getAllTargets();
