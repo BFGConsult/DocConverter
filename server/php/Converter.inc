@@ -8,8 +8,8 @@ abstract class Converter extends Result {
 
   static $converters=array();
 
-  abstract static function getTargets($sourceFormat);
-  abstract static function getSources($sourceFormat);
+  abstract static function getTargets($sourceFormat, $module=null);
+  abstract static function getSources($sourceFormat, $module=null);
   abstract static function createConverter($in_name, $in_type, $out_type);
 
   static function getAllSources($targetFormat = null) {
@@ -84,10 +84,10 @@ class IdentityConverter extends Converter {
   }
 
   
-  static function getTargets($sourceFormat) {
-    return array();
+  static function getTargets($sourceFormat, $module=null) {
+    return ($module)? array('odt' => array( 'mime' => $sourceFormat) ) : array();
   }
-  static function getSources($sourceFormat) {
+  static function getSources($sourceFormat, $module=null) {
     return array();
   }
 
@@ -178,7 +178,7 @@ class TextUnoConverter extends UnoConverter {
     return new TextUnoConverter($in_name, $in_mimetype, $out_mimetype);
   }
 
-  static function getTargets($sourceFormat) {
+  static function getTargets($sourceFormat, $module=null) {
     if (!$sourceFormat ||
 	array_key_exists($sourceFormat, self::getSourceFormats()) ||
 	array_key_exists($sourceFormat, self::getBothFormats())	
@@ -192,7 +192,7 @@ class TextUnoConverter extends UnoConverter {
       return array();
   }
 
-  static function getSources($targetFormat) {
+  static function getSources($targetFormat, $module=null) {
     if (!$targetFormat ||
 	array_key_exists($targetFormat, self::getBothFormats())	||
 	array_key_exists($targetFormat, self::getTargetFormats())

@@ -49,10 +49,10 @@ function parseArguments($base='/') {
 	}
 	$in_name= $_FILES['file']['tmp_name'];
 	$in_type = $_FILES['file']['type'];
-	$targets= $argv[1]::getTargets();
+	$targets= $argv[1]::getTargets($in_type, $argv[1]);
 
-	if (array_key_exists($argv[0], $targets)) {
-	  $out_type=$targets[$argv[0]];
+	if (array_key_exists($argv[2], $targets)) {
+	  $out_type=$targets[$argv[2]];
 	}
 	else {
 	  errorPage(404);
