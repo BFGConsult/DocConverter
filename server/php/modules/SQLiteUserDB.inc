@@ -1,5 +1,6 @@
 <?php
-require_once('UserDB.inc');
+require_once( __DIR__ . '/../UserDB.inc');
+
 class SQLiteUserDB extends UserDB {
   
   function __construct($location) {
