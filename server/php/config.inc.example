@@ -1,0 +1,6 @@
+<?php
+
+$dbconfig="nulldb:";
+//$dbconfig="sqlite:<path to DB>";
+
+?>
