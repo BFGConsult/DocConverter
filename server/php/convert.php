@@ -4,12 +4,11 @@ ini_set("display_errors", 1);
 
 include_once('Converter.inc');
 include_once('IntroSpection.inc');
+include_once('UserDB.inc');
 
-function checkApiKey($apikey, &$timeout=0) {
-  //NOT IMPLEMENTED, ALWAYS ANSWERS TRUE
-  $timeout = 0;
-  return true;
-}
+$dbconfig="nulldb:";
+
+$users=UserDB::create($dbconfig);
 
 function debugOutput($str) {
   header('Content-Type: text/plain');
@@ -34,6 +33,7 @@ function removePrefixIfExists($prefix, $str) {
 }
 
 function parseArguments($base='/') {
+  global $users;
   $args = removePrefixIfExists($base,   $_SERVER['REQUEST_URI']);
   if (!$args) {
     return new DefaultPage();
@@ -85,7 +85,7 @@ function parseArguments($base='/') {
 
     $apikey=(array_key_exists('apikey', $_POST))?$_POST['apikey']:null;
     $timeout=0;
-    if (!checkApiKey($apikey, $timeout)) {
+    if (!$users->checkApiKey($apikey, $timeout)) {
       errorPage(403);
     }
     elseif ($timeout) {
