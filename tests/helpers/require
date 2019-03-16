@@ -1,7 +1,7 @@
 
 requireProgram () {
     echo -n "Check if program $1 exists: "
-    which -s $1 && echo "pass" || echo "fail"
+    which $1 >/dev/null  && echo "pass" || echo "fail"
 }
 
 requireFileExists () {
