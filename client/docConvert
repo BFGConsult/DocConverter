@@ -31,7 +31,7 @@ if [ -n "$APIKEY" ]
 then
     USER=$(echo $APIKEY|cut -d- -f1)
     APIKEY=$(echo $APIKEY|cut -d- -f2)
-    APIKEY=$(echo $APIKEY-$(date +%Y-%m-%d) | shasum | cut -d\  -f 1)
+    APIKEY=$(echo -n $APIKEY-$(date +%Y-%m-%d) | shasum | cut -d\  -f 1)
     APIKEY="${USER}-${APIKEY}"
 fi
 
