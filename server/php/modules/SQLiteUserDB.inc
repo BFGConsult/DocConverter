@@ -30,6 +30,9 @@ class SQLiteUserDB extends UserDB {
     if ($uname && (!$user || !$this->validateHash($apitransitkey, $user['apikey'])))
       return false;
 
+    if ($user['ratelimit'] == 0) {
+      return true;
+    }
     
     $sPerTok=3600/$user['ratelimit'];
     if ($user['tokens'] < $user['ratelimit']) {
