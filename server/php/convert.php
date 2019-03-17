@@ -15,14 +15,17 @@ function debugOutput($str) {
   print_r($str);
 }
 
-function errorPage($code, $headerlist=null) {
+function errorPage($code, $headerlist=null, $content=null) {
   http_response_code($code);
   if ($headerlist) {
     foreach($headerlist as $header => $value) {
       header("${header}: ${value}");
     }
   }
-  print $code;
+  if (!$content)
+    print $code;
+  else
+    print $content;
   exit(1);
 }
 
@@ -57,6 +60,19 @@ function parseArguments($base='/') {
 	if ($_SERVER['REQUEST_METHOD'] != 'POST' ) {
 	  errorPage(405);
 	}
+
+	$timeout=0;
+	if (!$users->checkApiKey( (array_key_exists('apikey', $_POST)) ? $_POST['apikey'] : null, $timeout)){
+	  errorPage(403);
+	}
+	elseif ($timeout) {
+	  errorPage(429,
+		    array('Retry-After' => $timeout, 'Content-Type' => 'text/plain'),
+		    "429 Too many requests.\n\nRetry after ${timeout} seconds.\n"
+		    );
+	}
+
+
 	$in_name= $_FILES['file']['tmp_name'];
 	$in_type = $_FILES['file']['type'];
 	$targets= $argv[1]::getTargets($in_type, $argv[1]);
@@ -83,13 +99,15 @@ function parseArguments($base='/') {
       errorPage(405);
     }
 
-    $apikey=(array_key_exists('apikey', $_POST))?$_POST['apikey']:null;
     $timeout=0;
-    if (!$users->checkApiKey($apikey, $timeout)) {
+    if (!$users->checkApiKey( (array_key_exists('apikey', $_POST)) ? $_POST['apikey'] : null , $timeout)) {
       errorPage(403);
     }
     elseif ($timeout) {
-      errorPage(429, array('Retry-After' => $timeout));
+	  errorPage(429,
+		    array('Retry-After' => $timeout, 'Content-Type' => 'text/plain'),
+		    "429 Too many requests.\n\nRetry after ${timeout} seconds.\n"
+		    );
     }
 
     $in_name= $_FILES['file']['tmp_name'];
