@@ -9,6 +9,10 @@ die () {
     exit 1
 }
 
+usage () {
+    echo -e "Usage is:\n\t$0 [-mv] <source> <destination>"
+}
+
 verbose=false
 
 while getopts 'm:v' val
@@ -40,6 +44,12 @@ then
     echo $BASEURL
     BASEURL=$BASEURL/module/$module
     echo $BASEURL
+fi
+
+if [ -z "$2" ]
+then
+    usage
+    exit 1
 fi
 
 infile=$1
