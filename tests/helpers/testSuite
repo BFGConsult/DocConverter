@@ -1,6 +1,15 @@
 #!/bin/bash
 
-source ~/.docconvertrc
+if [ -r ~/.docconvertrc ]
+then
+  source ~/.docconvertrc
+fi
+
+if [ -z "$BASEURL" ]
+then
+  echo \$BASEURL not set unable to proceed
+  exit 1
+fi
 
 runcmd () {
   curl -s $BASEURL/$1
@@ -15,4 +24,3 @@ testjq () {
     echo fail
   fi
 }
-

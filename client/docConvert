@@ -29,6 +29,10 @@ shift ${nopts}
 
 
 #Sourcing BASEURL
+if [ ! -r ~/.docconvertrc ]
+then
+    die "'~/.docconvertrc' does not exist"
+fi
 source ~/.docconvertrc
 
 if [ -n "$APIKEY" ]
